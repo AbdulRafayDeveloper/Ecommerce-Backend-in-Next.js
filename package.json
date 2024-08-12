@@ -4,14 +4,34 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.5",
+    "@mui/material": "^5.16.6",
+    "axios": "^1.7.3",
+    "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.3",
+    "dotenv": "^16.4.5",
+    "highcharts": "^11.4.6",
+    "jsonwebtoken": "^9.0.2",
+    "lucide-react": "^0.417.0",
+    "next": "14.2.5",
+    "next-themes": "^0.3.0",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
+    "react-countup": "^6.5.3",
     "react-dom": "^18",
-    "next": "14.2.5"
+    "react-icons": "^5.2.1",
+    "recharts": "^2.12.7",
+    "serverless-mysql": "^1.5.5",
+    "sonner": "^1.5.0",
+    "sooner": "^1.1.4",
+    "sweetalert2": "^11.12.3"
   },
   "devDependencies": {
     "postcss": "^8",
