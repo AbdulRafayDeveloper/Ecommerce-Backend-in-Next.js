@@ -341,3 +341,68 @@ form.sign-in-form {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Notification Icon */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blinking {
+  animation: blink 1s infinite; /* 1s duration, infinite loop */
+}
+.notify {
+  position: relative;
+  right: -8px;
+  top: -10px;
+}
+.notify .heartbit {
+  animation: 1s ease-out 0s normal none infinite running heartbit;
+  border: 5px solid #fbfff4;
+  border-radius: 70px;
+  height: 25px;
+  position: absolute;
+  right: -4px;
+  top: -20px;
+  width: 25px;
+  z-index: 10;
+}
+.notify .point {
+  background-color: #fbfff4;
+  border-radius: 30px;
+  height: 6px;
+  position: absolute;
+  right: 6px;
+  top: -10px;
+  width: 6px;
+}
+
+@keyframes heartbit {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  25% {
+    opacity: 0.1;
+    transform: scale(0.1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.5);
+  }
+  75% {
+    opacity: 0.5;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
