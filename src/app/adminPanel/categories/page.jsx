@@ -9,6 +9,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Swal from "sweetalert2";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 import axios from "axios";
 import Link from "next/link";
 
@@ -273,6 +274,7 @@ const listCategories = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </Sidebar>
     </>
   );

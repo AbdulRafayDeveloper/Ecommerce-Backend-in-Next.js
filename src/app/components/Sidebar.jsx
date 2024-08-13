@@ -53,6 +53,7 @@ const Sidebar = ({ children }) => {
     {
       name: "Orders",
       icon: BsCartCheck,
+      link: "../adminPanel/orders",
       subMenu: [
         { name: "Pending", link: "../adminPanel/orders/pending" },
         { name: "Delivered", link: "../adminPanel/orders/delivered" },

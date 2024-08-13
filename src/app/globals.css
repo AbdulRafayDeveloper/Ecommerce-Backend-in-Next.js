@@ -355,9 +355,6 @@ form.sign-in-form {
   }
 }
 
-.blinking {
-  animation: blink 1s infinite; /* 1s duration, infinite loop */
-}
 .notify {
   position: relative;
   right: -8px;
@@ -405,4 +402,10 @@ form.sign-in-form {
     opacity: 0;
     transform: scale(1);
   }
+}
+
+.data {
+  max-width: 1200px; /* adjust this value to your laptop screen width */
+  margin: 0 auto;
+  overflow-x: auto;
 }

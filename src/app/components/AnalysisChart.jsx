@@ -37,8 +37,8 @@ const Analysis = () => {
       <h1 className="text-[#006d77] font-bold text-xl md:text-2xl lg:text-3xl mb-8">
         Dashboard
       </h1>
-      <div className="flex gap-8 w-[70vw] h-[100vh]">
-        <div className="bg-white shadow-lg rounded-lg p-4 w-1/2 h-2/3">
+      <div className="flex flex-col gap-8 w-[90vw] h-auto lg:flex-row lg:w-[70vw] lg:h-[100vh]">
+        <div className="bg-white shadow-lg rounded-lg p-4 w-full lg:w-1/2 lg:h-2/3">
           <h2 className="text-lg font-semibold mb-4">Area Chart</h2>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={areaChartData}>
@@ -61,7 +61,7 @@ const Analysis = () => {
             </AreaChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white shadow-lg rounded-lg p-4 w-1/2 h-2/3">
+        <div className="bg-white shadow-lg rounded-lg p-4 w-full lg:w-1/2 lg:h-2/3">
           <h2 className="text-lg font-semibold mb-4">Pie Chart</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
