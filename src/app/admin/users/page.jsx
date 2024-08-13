@@ -100,22 +100,20 @@ const listUsers = () => {
 
             <div class="relative overflow-x-auto my-4">
               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-center text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="bg-slate-100">
-                    <th className="border p-2">Sr#</th>
-                    <th className="border p-2">name</th>
-                    <th className="border p-2">email</th>
-                    <th className="border p-2">actions</th>
+                    <th className="border px-4 py-2">Sr#</th>
+                    <th className="border px-4 py-2">Name</th>
+                    <th className="border px-4 py-2">Email</th>
+                    <th className="border px-4 py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border">
-                    <td className="text-center">1</td>
-                    <td className="text-center">Kashmala</td>
-                    <td className="text-center">
-                      itskashmalahere1010@gmail.com
-                    </td>
-                    <td className="flex gap-2 p-2 justify-center items-center">
+                    <td className="text-center px-4 py-2">1</td>
+                    <td className="text-center px-4 py-2">Rafay</td>
+                    <td className="text-center px-4 py-2">amirrafay135@gmail.com</td>
+                    <td className="flex gap-4 p-2 justify-center items-center">
                       <FaRegPenToSquare className="text-green-400 text-lg font-bold cursor-pointer" />
                       <RiDeleteBin6Line
                         className="text-red-400 text-lg font-bold cursor-pointer"
@@ -126,7 +124,6 @@ const listUsers = () => {
                 </tbody>
               </table>
             </div>
-
             <div className="flex flex-col md:flex-row justify-between mt-4 text-sm">
               <p>Showing 1 to 1 of 1 entries</p>
               <div className="flex mt-4 md:mt-0">
