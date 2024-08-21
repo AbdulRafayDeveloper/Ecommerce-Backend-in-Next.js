@@ -17,7 +17,6 @@ import { BsBoxes, BsCartCheck } from "react-icons/bs";
 
 const Sidebar = ({ children }) => {
   const [open, setOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [orderMenuOpen, setOrderMenuOpen] = useState(false); // State to toggle submenu
   const router = useRouter();
 
@@ -26,67 +25,49 @@ const Sidebar = ({ children }) => {
   const menus = [
     {
       name: "Overview",
-      link: "../adminPanel/dashboard",
+      link: "../admin/dashboard",
       icon: LuLayoutDashboard,
     },
-    { name: "Users", link: "../adminPanel/users", icon: FaUserShield },
+    { name: "Users", link: "../admin/users", icon: FaUserShield },
     {
       name: "Products",
-      link: "../adminPanel/products",
+      link: "../admin/products",
       icon: BsBoxes,
     },
     {
       name: "Categories",
-      link: "../adminPanel/categories",
+      link: "../admin/categories",
       icon: TbCategoryPlus,
     },
     {
       name: "Sub-Categories",
-      link: "../adminPanel/sub-categories",
+      link: "../admin/sub-categories",
       icon: MdOutlineCategory,
     },
     {
       name: "Customers",
-      link: "../adminPanel/customers",
+      link: "../admin/customers",
       icon: IoPersonAddOutline,
     },
     {
       name: "Orders",
       icon: BsCartCheck,
-      link: "../adminPanel/orders",
+      link: "../admin/orders",
       subMenu: [
-        { name: "Pending", link: "../adminPanel/orders/pending" },
-        { name: "Delivered", link: "../adminPanel/orders/delivered" },
-        { name: "Shipped", link: "../adminPanel/orders/shipped" },
+        { name: "Pending", link: "../admin/orders/pending" },
+        { name: "Delivered", link: "../admin/orders/delivered" },
+        { name: "Shipped", link: "../admin/orders/shipped" },
       ],
     },
     {
       name: "Analytics",
-      link: "../adminPanel/analytics",
+      link: "../admin/analytics",
       icon: IoAnalyticsSharp,
     },
   ];
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 768) {
-        setOpen(false);
-        setIsMobile(true);
-      } else {
-        setIsMobile(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const toggleSidebar = () => {
-    if (!isMobile) {
-      setOpen(!open);
-    }
+    setOpen(!open);
   };
 
   const toggleOrderMenu = () => {
@@ -102,9 +83,9 @@ const Sidebar = ({ children }) => {
       >
         <div className="flex flex-col items-center">
           <div
-            className={`bg-[#006d77] text-white p-3 rounded-lg flex gap-2 items-center ${
-              isMobile ? "cursor-default" : "cursor-pointer"
-            }`}
+            className={
+              "bg-[#006d77] text-white p-3 rounded-lg flex gap-2 items-center cursor-pointer"
+            }
             onClick={toggleSidebar}
           >
             <GiHamburgerMenu

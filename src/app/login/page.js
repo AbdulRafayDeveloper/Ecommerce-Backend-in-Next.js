@@ -48,7 +48,7 @@ const Login = () => {
     const userData = {
       username: formData.username,
       password: formData.password,
-      email: isSignUp ? formData.email : "", // Include email only for sign up
+      email: isSignUp ? formData.email : "",
     };
 
     if (isSignUp && !validateEmail(formData.email)) {
@@ -65,8 +65,6 @@ const Login = () => {
         // Login logic
         response = await axios.post("/api/login", userData);
       }
-
-      console.log(response.data); // Debugging step to check the response
 
       if (response.data.status === 200) {
         if (isSignUp) {
@@ -93,12 +91,11 @@ const Login = () => {
       console.log("Error", e);
       toast.error("Error!");
     }
-    // Submission logic...
     try {
-      setLoading(false); // End loading after submission is complete
+      setLoading(false);
     } catch (error) {
       console.error(error);
-      setLoading(false); // Ensure loading is stopped even if there's an error
+      setLoading(false);
     }
   };
   const classes = {

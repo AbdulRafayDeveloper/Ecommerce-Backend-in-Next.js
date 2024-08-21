@@ -6,6 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
@@ -14,13 +15,12 @@ import axios from "axios";
 import Link from "next/link";
 
 const listCategories = () => {
-  // Send API to list data from database!
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     const fetchRecords = async () => {
       try {
         const response = await axios.get(`/api/categories`);
-        setCategories(response.data.result);
+        setCategories(response.data.data);
       } catch (error) {
         alert("Records not found");
       }
@@ -93,13 +93,13 @@ const listCategories = () => {
     <>
       <Sidebar>
         <Header />
-        <div className="p-12 bg-gray-100 h-screen">
-          <h1 className="text-2xl">Categories</h1>
-          <div className="flex justify-between items-center">
+        <div className="p-4  bg-gray-100 h-screen">
+          <h1 className="text-xl sm:text-2xl my-1">Categories</h1>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
             <h3 className="text-sm">
               Dashboard <span className="text-gray-400">/ List </span>
             </h3>
-            <div className="options flex gap-3">
+            <div className="options flex gap-3 mt-4 md:mt-0">
               <Button
                 variant="contained"
                 size="small"
@@ -158,7 +158,7 @@ const listCategories = () => {
                   </div>
                 </div>
               )}
-              <Link href={"../adminPanel/categories/addCategory"}>
+              <Link href={"../admin/categories/addCategory"}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -174,8 +174,8 @@ const listCategories = () => {
             </div>
           </div>
 
-          <div className="data bg-white rounded-lg p-4 mt-8">
-            <div className="flex justify-between">
+          <div className="bg-white rounded-lg p-4 mt-10">
+            <div className="flex flex-col md:flex-row justify-between">
               <p className="text-sm">
                 Show{" "}
                 <input
@@ -183,59 +183,39 @@ const listCategories = () => {
                   id="entries"
                   min={10}
                   max={20}
-                  value={entries} // Controlled input value from state
+                  value={entries}
                   step={1}
-                  onChange={handleInputChange} // Call the handler function on change
-                  className="border rounded p-1"
+                  onChange={handleInputChange}
+                  className="border rounded p-1 w-16"
                 />
+                {"  "}
                 entries
               </p>
-              <label htmlFor="search">
+              <label htmlFor="search" className="mt-4 md:mt-0">
                 Search: <input type="text" className="border rounded p-1" />
               </label>
             </div>
-            <div className="table my-8 text-sm">
-              <table className="table-fixed w-full border rounded-lg border-none">
-                <thead>
+
+            <div class="relative overflow-x-auto my-4">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="bg-slate-100">
-                    <th className="border p-2">category_id</th>
-                    <th className="border p-2">category_name</th>
-                    <th className="border p-2">description</th>
-                    <th className="border p-2">created_at</th>
-                    <th className="border p-2">updated_at</th>
-                    <th className="border p-2">actions</th>
+                    <th className="border px-4 py-2">Sr#</th>
+                    <th className="border px-4 py-2">Name</th>
+                    <th className="border px-4 py-2">Description</th>
+                    <th className="border px-4 py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {categories &&
                     categories.map((element, index) => (
                       <tr key={index} className="border">
-                        <td className="text-center">{element.category_id}</td>
+                        <td className="text-center">{index + 1}</td>
                         <td className="text-center">{element.category_name}</td>
                         <td className="text-center">{element.description}</td>
-                        <td className="text-center">
-                          {new Date(element.created_at).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
-                        </td>
-                        <td className="text-center">
-                          {new Date(element.updated_at).toLocaleDateString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
-                        </td>
                         <td className="flex gap-2 p-2 justify-center items-center">
                           <Link
-                            href={`../adminPanel/categories/editCategory/${element.category_id}`}
+                            href={`../admin/categories/editCategory/${element.category_id}`}
                           >
                             <FaRegPenToSquare className="text-green-400 text-lg font-bold cursor-pointer" />
                           </Link>
@@ -251,16 +231,15 @@ const listCategories = () => {
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-between mt-4 text-sm">
+            <div className="flex flex-col md:flex-row justify-between my-4 text-sm">
               <p>Showing 1 to 1 of 1 entries</p>
-              <div className="flex">
+              <div className="flex mt-4 md:mt-0">
                 <Button
                   variant="outlined"
                   className="capitalize border-slate-300 text-gray-400"
                 >
                   Previous
                 </Button>
-
                 <div className="bg-[#006d77] hover:bg-[#349fa9] text-white px-4 py-2">
                   1
                 </div>

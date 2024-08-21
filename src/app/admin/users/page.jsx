@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { FaRegPenToSquare, FaDownload } from "react-icons/fa6";
-
 import Swal from "sweetalert2";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
@@ -67,7 +65,7 @@ const listUsers = () => {
     <>
       <Sidebar>
         <Header />
-        <div className="data p-4 sm:p-6 md:p-8 lg:p-12 bg-gray-100 h-screen">
+        <div className="p-4 sm:p-6 md:p-8 lg:p-6 bg-gray-100 h-screen">
           <h1 className="text-xl sm:text-2xl my-1">Users</h1>
           <div className="flex flex-col md:flex-row justify-between items-center mb-4">
             <h3 className="text-sm">
@@ -76,7 +74,7 @@ const listUsers = () => {
             </h3>
           </div>
 
-          <div className="data bg-white rounded-lg p-4 mt-24">
+          <div className="bg-white rounded-lg p-4 mt-24">
             <div className="flex flex-col md:flex-row justify-between">
               <p className="text-sm">
                 Show{" "}
@@ -98,9 +96,9 @@ const listUsers = () => {
               </label>
             </div>
 
-            <div class="relative overflow-x-auto my-4">
-              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <div className="relative overflow-x-auto my-4">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="bg-slate-100">
                     <th className="border px-4 py-2">Sr#</th>
                     <th className="border px-4 py-2">Name</th>
@@ -109,22 +107,24 @@ const listUsers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border">
-                    <td className="text-center px-4 py-2">1</td>
-                    <td className="text-center px-4 py-2">Rafay</td>
-                    <td className="text-center px-4 py-2">amirrafay135@gmail.com</td>
-                    <td className="flex gap-4 p-2 justify-center items-center">
-                      <FaRegPenToSquare className="text-green-400 text-lg font-bold cursor-pointer" />
-                      <RiDeleteBin6Line
-                        className="text-red-400 text-lg font-bold cursor-pointer"
-                        onClick={() => handleDeletion(element.id)}
-                      />
-                    </td>
-                  </tr>
+                  {users &&
+                    users.map((element, index) => (
+                      <tr key={index} className="border">
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{element.name}</td>
+                        <td className="text-center">{element.email}</td>
+                        <td className="flex gap-2 p-2 justify-center items-center">
+                          <RiDeleteBin6Line
+                            className="text-red-400 text-lg font-bold cursor-pointer"
+                            onClick={() => handleDeletion(element.id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-col md:flex-row justify-between mt-4 text-sm">
+            <div className="flex flex-col md:flex-row justify-between my-4 text-sm">
               <p>Showing 1 to 1 of 1 entries</p>
               <div className="flex mt-4 md:mt-0">
                 <Button

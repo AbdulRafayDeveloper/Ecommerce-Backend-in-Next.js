@@ -7,7 +7,11 @@ export async function DELETE(request, { params }) {
       params.id,
     ]);
     if (deleteUser.affectedRows === 0) {
-      return NextResponse.json({ status: 404, message: "User not found" });
+      return NextResponse.json({
+        status: 404,
+        message: "User not found",
+        data: null,
+      });
     } else {
       return NextResponse.json({ message: "Deleted Successfully" });
     }

@@ -5,11 +5,10 @@ export async function GET() {
   try {
     const role = "User";
     const result = await pool.query(
-      "SELECT `id`, `name`, `email`, `role` FROM `users` WHERE `role` = ?",
+      "SELECT `id`, `name`, `email` FROM `users` WHERE `role` = ?",
       [role]
     );
-    console.log("Database response:", result);
-    return NextResponse.json({ status: 200, result: result });
+    return NextResponse.json({ status: 200, message: "", data: result });
   } catch (error) {
     console.log("Error in GET:", error);
     return NextResponse.json({ status: 500, message: error.message });

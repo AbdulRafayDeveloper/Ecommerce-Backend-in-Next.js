@@ -118,7 +118,7 @@ const Header = () => {
           >
             <div style={{ borderRadius: "50%", overflow: "hidden" }}>
               <Image
-                src="/images/profile-pic.png"
+                src="/images/pic.png"
                 alt="Admin Profile Photo"
                 width={40}
                 height={40}

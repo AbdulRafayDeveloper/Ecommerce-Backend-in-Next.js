@@ -11,6 +11,7 @@ export async function POST(request) {
       return NextResponse.json({
         status: 400,
         message: "Fields are required!",
+        data: null,
       });
     }
 
@@ -24,6 +25,7 @@ export async function POST(request) {
       return NextResponse.json({
         status: 409,
         message: "This Account Already Exists",
+        data: null,
       });
     }
 
@@ -49,10 +51,15 @@ export async function POST(request) {
       return NextResponse.json({
         status: 400,
         message: "Your request cannot be submitted. Try Again Later!",
+        data: null,
       });
     }
   } catch (e) {
     console.log("Error in Insert operation", e);
-    return NextResponse.json({ status: 500, message: "Internal Server Error" });
+    return NextResponse.json({
+      status: 500,
+      message: "Internal Server Error",
+      data: null,
+    });
   }
 }

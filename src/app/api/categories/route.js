@@ -10,6 +10,7 @@ export async function POST(request) {
       return NextResponse.json({
         status: 400,
         message: "Fields are required!",
+        data: null,
       });
     }
 
@@ -23,6 +24,7 @@ export async function POST(request) {
       return NextResponse.json({
         status: 409,
         message: "This Category Already Exists",
+        data: null,
       });
     }
     const addCategory = await pool.query(
@@ -32,22 +34,32 @@ export async function POST(request) {
     return NextResponse.json({
       status: 200,
       message: "Category inserted successfully!",
-      addCategory,
+      data: addCategory,
     });
   } catch (e) {
     console.log("Error in insertion!", e);
-    return NextResponse.json({ status: 500, message: "Internal Sever Error!" });
+    return NextResponse.json({
+      status: 500,
+      message: "Internal Sever Error!",
+      data: null,
+    });
   }
 }
 
 export async function GET() {
   try {
-    const role = "User";
     const result = await pool.query("SELECT * from categories");
-    // console.log("Database response:", result);
-    return NextResponse.json({ status: 200, result: result });
+    return NextResponse.json({
+      status: 200,
+      data: result,
+      message: "Data fetched successfully",
+    });
   } catch (error) {
     console.log("Error in GET:", error);
-    return NextResponse.json({ status: 500, message: error.message });
+    return NextResponse.json({
+      status: 500,
+      data: null,
+      message: error.message,
+    });
   }
 }

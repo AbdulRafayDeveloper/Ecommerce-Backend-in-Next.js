@@ -15,17 +15,32 @@ const Update = ({ params }) => {
     router.back();
   };
 
-  const [category, setCategory] = useState({
-    category_name: "",
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const response = await axios.get(`/api/categories`);
+        setData(response.data.data);
+      } catch (error) {
+        alert("Data not found");
+      }
+    };
+    fetchRecords();
+  }, []);
+
+  const [formData, setFormData] = useState({
+    subcategory_name: "",
     description: "",
+    category_id: "",
   });
+
   const id = params.id;
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get(`/api/categories/${id}`);
-        setCategory(response.data[0]);
+        const response = await axios.get(`/api/subCategories/${id}`);
+        setFormData(response.data[0]);
       } catch (error) {
         alert("API hit failed");
       }
@@ -37,23 +52,27 @@ const Update = ({ params }) => {
   const handleUpdation = async (e) => {
     e.preventDefault();
 
-    const upadtedCategory = {
-      category_name: category.category_name,
-      description: category.description,
+    const updatedSubcategory = {
+      subcategory_name: formData.subcategory_name,
+      description: formData.description,
+      category_id: formData.id,
     };
 
     try {
-      let response = await axios.put(`/api/categories/${id}`, upadtedCategory);
-      console.log(response.data);
+      let response = await axios.put(
+        `/api/subCategories/${id}`,
+        updatedSubcategory
+      );
       if (response.data.status === 200) {
         Swal.fire({
           title: "Category Updated!",
-          text: "Category successfully updated!.",
+          text: "Category successfully updated!",
           icon: "success",
         });
-        setCategory({
-          category_name: "",
+        setFormData({
+          subcategory_name: "",
           description: "",
+          category_id: "",
         });
       }
     } catch (e) {
@@ -68,7 +87,7 @@ const Update = ({ params }) => {
 
   const handleValidate = (e) => {
     const { name, value } = e.target;
-    setCategory((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -81,8 +100,8 @@ const Update = ({ params }) => {
         <h1 className="text-xl md:text-2xl">Properties</h1>
         <div className="flex flex-col md:flex-row justify-between items-center mb-3">
           <h3 className="text-sm text-center md:text-left">
-            Dashboard / Categories{" "}
-            <span className="text-gray-400">/ Update Category </span>
+            Dashboard / SubCategories{" "}
+            <span className="text-gray-400">/ Update Subcategory </span>
           </h3>
           <button
             className="bg-[#006d77] p-2 mt-3 md:mt-0 rounded flex items-center justify-center"
@@ -94,24 +113,44 @@ const Update = ({ params }) => {
         </div>
         <div className="bg-white rounded-lg p-4 md:p-8 mt-2">
           <h2 className="text-xl md:text-2xl text-center font-bold text-[#006d77]">
-            Update Category
+            Update Subcategory
           </h2>
-          <div className="flex flex-col text-sm mt-5 justify-center items-center gap-4 md:gap-8">
-            <div className="w-full md:w-1/3">
+          <div className="flex flex-col text-sm mt-5 justify-center items-center gap-3">
+            <div className="w-full md:w-2/5">
               <label htmlFor="name" className="flex justify-between">
-                <p>Category name</p>
+                <p>SubCategory name</p>
                 <p className="text-red-600 text-xs">*</p>
               </label>
               <input
                 type="text"
                 id="name"
-                name="category_name"
-                value={category.category_name}
+                name="subcategory_name"
+                value={formData.subcategory_name}
                 onChange={handleValidate}
                 className="w-full border border-gray-300 my-2 p-2 rounded-md focus:outline-none focus:border-blue-500"
               />
             </div>
-            <div className="w-full md:w-1/3">
+            <div className="w-full md:w-2/5">
+              <label htmlFor="category" className="flex justify-between">
+                <p>Category Name</p>
+                <p className="text-red-600 text-xs">*</p>
+              </label>
+              <select
+                name="id"
+                value={formData.id}
+                onChange={handleValidate}
+                className="w-full border border-gray-300 my-2 p-2 rounded-md"
+              >
+                <option value="">Select Category</option>
+                {data &&
+                  data.map((element, index) => (
+                    <option value={element.category_id} key={index}>
+                      {element.category_name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="w-full md:w-2/5">
               <label htmlFor="description" className="flex justify-between">
                 <p>Category Description</p>
                 <p className="text-red-600 text-xs">*</p>
@@ -119,7 +158,7 @@ const Update = ({ params }) => {
               <textarea
                 id="description"
                 name="description"
-                value={category.description}
+                value={formData.description}
                 onChange={handleValidate}
                 className="w-full border border-gray-300 my-2 p-2 rounded-md focus:outline-none focus:border-blue-500 resize-none"
                 rows={4}

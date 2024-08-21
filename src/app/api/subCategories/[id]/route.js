@@ -3,28 +3,30 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(request, { params }) {
   try {
+    const { id } = params;
     const deleteCategory = await pool.query(
-      "DELETE FROM categories where category_id=?",
-      [params.id]
+      "DELETE FROM subcategories WHERE subcategory_id = ?",
+      [id]
     );
+
     if (deleteCategory.affectedRows === 0) {
       return NextResponse.json({
         status: 404,
-        message: "Category not found",
         data: null,
+        message: "Category not found",
       });
     } else {
       return NextResponse.json({
-        status: 200,
-        message: "Deleted Successfully",
+        status: 200, // Set the success status code
         data: null,
+        message: "Deleted successfully",
       });
     }
   } catch (error) {
     return NextResponse.json({
       status: 500,
-      message: error.message,
       data: null,
+      message: error.message,
     });
   }
 }
@@ -32,7 +34,7 @@ export async function DELETE(request, { params }) {
 export async function GET(request, { params }) {
   try {
     const data = await pool.query(
-      "Select * from categories where category_id=?",
+      "Select * from subcategories where subcategory_id=?",
       [params.id]
     );
     return NextResponse.json(data);
@@ -47,19 +49,18 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
   try {
-    const { category_name, description } = await request.json();
+    const { subcategory_name, description, category_id } = await request.json();
     const { id } = params;
 
     const result = await pool.query(
-      "UPDATE categories SET category_name = ?, description = ? WHERE category_id = ?",
-      [category_name, description, id]
+      "UPDATE subcategories SET subcategory_name = ?, description = ?, category_id = ? WHERE subcategory_id = ?",
+      [subcategory_name, description, category_id, id]
     );
-
     if (result.affectedRows > 0) {
       return NextResponse.json({
         status: 200,
         message: "Updated successfully!",
-        data: { id, category_name, description },
+        data: { id, subcategory_name, description },
       });
     } else {
       return NextResponse.json({

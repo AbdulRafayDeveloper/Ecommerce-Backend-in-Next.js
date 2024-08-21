@@ -10,37 +10,37 @@ export async function POST(request) {
     const { username, password } = await request.json();
 
     if (!username || !password) {
-      console.log("Fields are required!");
       return NextResponse.json({
         status: 400,
         message: "Fields are required!",
+        data: null,
       });
     }
 
-    // Check if the account already exists
+    // Check if the account exists
     const [registered] = await pool.query(
       "SELECT * FROM users WHERE name = ?",
       [username]
     );
 
     if (!registered) {
-      console.log("Account doesn't exist!");
       return NextResponse.json({
         status: 400,
         message: "Account doesn't exist!",
+        data: null,
       });
     }
 
     const checkPassword = await bcrypt.compare(password, registered.password);
     if (!checkPassword) {
-      console.log("Invalid password!");
       return NextResponse.json({
-        status: 408,
+        status: 401,
         message: "Invalid password!",
+        data: null,
       });
     }
 
-    // Keep logged in
+    // Generate JWT token
     const token = jwt.sign(
       {
         id: registered.id,
@@ -59,24 +59,30 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error occurred:", error);
     return NextResponse.json({
-      message: "Failed to login. Try again...",
       status: 500,
+      message: "Failed to login. Try again...",
+      data: null,
     });
   }
 }
 
 export async function GET() {
   try {
-    const result = await pool.query(
-      "SELECT * FROM `users` WHERE `role` = 'User'"
+    const [result] = await pool.query(
+      "SELECT * FROM users WHERE role = 'User'"
     );
+
     return NextResponse.json({
       status: 200,
       message: "Data fetched successfully!",
       data: result,
     });
-  } catch (e) {
-    console.log("Error in get: ", e);
-    return NextResponse.json({ status: 500, message: e.message });
+  } catch (error) {
+    console.error("Error in get:", error);
+    return NextResponse.json({
+      status: 500,
+      message: "Error fetching data",
+      data: null,
+    });
   }
 }

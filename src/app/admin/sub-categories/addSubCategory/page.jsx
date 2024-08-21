@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { FiArrowLeft } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -14,10 +14,28 @@ const Add = () => {
   const handleBack = () => {
     router.back();
   };
+
+  // Get all category names for dropdown
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const response = await axios.get(`/api/categories`);
+        setData(response.data.data);
+      } catch (error) {
+        alert("Data not found");
+      }
+    };
+    fetchRecords();
+  }, []);
+
+  // Sub-Category Form
   const [formData, setFormData] = useState({
-    category_name: "",
+    subcategory_name: "",
     description: "",
+    id: "",
   });
+
   const handleValidate = (e) => {
     let { name, value } = e.target;
     setFormData((prevData) => ({
@@ -25,51 +43,50 @@ const Add = () => {
       [name]: value,
     }));
   };
+
   const handleSubmission = async (e) => {
     e.preventDefault();
-    if (!formData.category_name || !formData.description) {
+
+    if (!formData.subcategory_name || !formData.description || !formData.id) {
       Swal.fire({
         title: "Error!",
-        text: "Fill the fields first...",
+        text: "All fields are required!",
         icon: "error",
       });
       return;
     }
-    const categoryData = {
-      category_name: formData.category_name,
+
+    const subCategoryData = {
+      subcategory_name: formData.subcategory_name,
       description: formData.description,
+      id: formData.id,
     };
+    console.log(subCategoryData.id);
 
     try {
-      let response = await axios.post("/api/categories", categoryData);
+      const response = await axios.post("/api/subCategories", subCategoryData);
       if (response.data.status === 200) {
         Swal.fire({
-          title: "Category Added!",
-          text: "Data is added successfully!.",
+          title: "SubCategory Added!",
+          text: "Data added successfully!",
           icon: "success",
         });
         setFormData({
-          category_name: "",
+          subcategory_name: "",
           description: "",
-        });
-      } else if (response.data.status === 409) {
-        Swal.fire({
-          title: "Oops!",
-          text: "Category already exits. Try another name.",
-          icon: "warning",
+          id: "",
         });
       } else {
         Swal.fire({
           title: "Error!",
-          text: "An unexpected error occurred",
+          text: response.data.message,
           icon: "error",
         });
       }
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: "API Failed!",
+        text: "Submission failed",
         icon: "error",
       });
     }
@@ -82,8 +99,8 @@ const Add = () => {
         <h1 className="text-xl md:text-2xl">Properties</h1>
         <div className="flex flex-col md:flex-row justify-between items-center mb-3">
           <h3 className="text-sm text-center md:text-left">
-            Dashboard / Categories{" "}
-            <span className="text-gray-400">/ Add Category </span>
+            Dashboard / SubCategories{" "}
+            <span className="text-gray-400">/ Add Sub-Category </span>
           </h3>
           <button
             className="bg-[#006d77] p-2 mt-3 md:mt-0 rounded flex items-center justify-center"
@@ -95,24 +112,44 @@ const Add = () => {
         </div>
         <div className="bg-white rounded-lg p-4 md:p-8 mt-2">
           <h2 className="text-xl md:text-2xl text-center font-bold text-[#006d77]">
-            Add Category
+            Add SubCategory
           </h2>
-          <div className="flex flex-col text-sm mt-5 justify-center items-center gap-4 md:gap-8">
-            <div className="w-full md:w-1/3">
+          <div className="flex flex-col text-sm mt-5 justify-center items-center gap-3">
+            <div className="w-full md:w-2/5">
               <label htmlFor="name" className="flex justify-between">
-                <p>Category name</p>
+                <p>SubCategory name</p>
                 <p className="text-red-600 text-xs">*</p>
               </label>
               <input
                 type="text"
                 id="name"
-                name="category_name"
-                value={FormData.category_name}
+                name="subcategory_name" // Changed to match API
+                value={formData.subcategory_name}
                 onChange={handleValidate}
                 className="w-full border border-gray-300 my-2 p-2 rounded-md focus:outline-none focus:border-blue-500"
               />
             </div>
-            <div className="w-full md:w-1/3">
+            <div className="w-full md:w-2/5">
+              <label htmlFor="category" className="flex justify-between">
+                <p>Category Name</p>
+                <p className="text-red-600 text-xs">*</p>
+              </label>
+              <select
+                name="id"
+                value={formData.id}
+                onChange={handleValidate}
+                className="w-full border border-gray-300 my-2 p-2 rounded-md"
+              >
+                <option value="">Select Category</option>
+                {data &&
+                  data.map((element, index) => (
+                    <option value={element.category_id} key={index}>
+                      {element.category_name} {/* This is the display name */}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="w-full md:w-2/5">
               <label htmlFor="description" className="flex justify-between">
                 <p>Category Description</p>
                 <p className="text-red-600 text-xs">*</p>
@@ -120,7 +157,7 @@ const Add = () => {
               <textarea
                 id="description"
                 name="description"
-                value={FormData.description}
+                value={formData.description}
                 onChange={handleValidate}
                 className="w-full border border-gray-300 my-2 p-2 rounded-md focus:outline-none focus:border-blue-500 resize-none"
                 rows={4}
