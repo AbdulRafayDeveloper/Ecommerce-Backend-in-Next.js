@@ -71,7 +71,6 @@ const Login = () => {
           toast.success("Account created successfully!");
         } else {
           toast.success("Logged in successfully!");
-          window.location.href = response.data.redirectUrl;
         }
         setFormData({
           username: "",

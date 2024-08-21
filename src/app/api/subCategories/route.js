@@ -6,7 +6,6 @@ export async function POST(request) {
     const { subcategory_name, description, id } = await request.json();
 
     if (!subcategory_name || !description || !id) {
-      console.log("Fields are required!");
       return NextResponse.json({
         status: 400,
         message: "Fields are required!",

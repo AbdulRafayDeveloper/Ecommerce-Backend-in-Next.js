@@ -32,7 +32,7 @@ export async function POST(request) {
     // Hash the password before saving it
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const role = "User";
+    const role = "user";
 
     let insertData = await pool.query(
       "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",

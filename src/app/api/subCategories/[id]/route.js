@@ -4,6 +4,13 @@ import { NextResponse } from "next/server";
 export async function DELETE(request, { params }) {
   try {
     const { id } = params;
+    if (!params) {
+      return NextResponse.json({
+        status: 400,
+        message: "Fields are required!",
+        data: null,
+      });
+    }
     const deleteCategory = await pool.query(
       "DELETE FROM subcategories WHERE subcategory_id = ?",
       [id]
@@ -51,6 +58,14 @@ export async function PUT(request, { params }) {
   try {
     const { subcategory_name, description, category_id } = await request.json();
     const { id } = params;
+
+    if (!subcategory_name || !description || !category_id) {
+      return NextResponse.json({
+        status: 400,
+        message: "Fields are required!",
+        data: null,
+      });
+    }
 
     const result = await pool.query(
       "UPDATE subcategories SET subcategory_name = ?, description = ?, category_id = ? WHERE subcategory_id = ?",
