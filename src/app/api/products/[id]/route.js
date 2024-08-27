@@ -12,7 +12,7 @@ export async function DELETE(request, { params }) {
       });
     }
     const deleteCategory = await pool.query(
-      "DELETE FROM subcategories WHERE subcategory_id = ?",
+      "DELETE FROM products WHERE product_id = ?",
       [id]
     );
 
@@ -40,16 +40,10 @@ export async function DELETE(request, { params }) {
 
 export async function GET(request, { params }) {
   try {
-    const data = await pool.query(
-      "SELECT * FROM subcategories WHERE category_id = ?",
-      [params.id]
-    );
-
-    return NextResponse.json({
-      status: 200,
-      data: data,
-      message: "Subcategories fetched successfully",
-    });
+    const data = await pool.query("Select * from products where product_id=?", [
+      params.id,
+    ]);
+    return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({
       status: 500,

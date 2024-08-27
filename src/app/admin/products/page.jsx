@@ -1,45 +1,37 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@mui/material";
+import { FaRegPenToSquare, FaDownload } from "react-icons/fa6";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { FaRegPenToSquare, FaDownload } from "react-icons/fa6";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
-import Link from "next/link";
 import Swal from "sweetalert2";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 import axios from "axios";
+import Link from "next/link";
 
-const List = () => {
-  // For Filter
-  const [isFilterVisible, setFilterVisible] = useState(false);
-
-  // Options for the dropdown
-  const propertyNames = [
-    "Rental Property 5wk",
-    "Another Property",
-    "Third Property",
-  ];
-  const propertyCodes = ["PR-01", "PR-02", "PR-03"];
-  const propertyCategories = ["Rental", "Sale"];
-  const propertyDetails = ["Faisalabad", "Lahore", "Karachi"];
-
-  // Toggle dropdown visibility
-  const toggleFilter = () => {
-    setFilterVisible(!isFilterVisible);
-  };
-
-  // Handle dropdown change (example)
-  const handleFilterChange = (e) => {
-    console.log(e.target.value); // Log selected value (add more logic as needed)
-  };
+const listProducts = () => {
+  // Send API to list data from database!
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const fetchRecords = async () => {
+      try {
+        const response = await axios.get(`/api/products`);
+        setProducts(response.data.data);
+      } catch (error) {
+        alert("Records not found");
+      }
+    };
+    fetchRecords();
+  }, []);
 
   // For Delete
-  const handleClick = () => {
-    Swal.fire({
+  const handleDeletion = async (id) => {
+    const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
@@ -47,15 +39,35 @@ const List = () => {
       confirmButtonColor: "#d33",
       cancelButtonColor: "#006d77",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(`/api/products/${id}`);
+        if (response.data.status === 200) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to delete:", error);
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+          title: "Error!",
+          text: "There was a problem in deleting data.",
+          icon: "error",
         });
       }
-    });
+    }
+  };
+
+  // Pagination
+  const [entries, setEntries] = useState(12);
+  const handleInputChange = (event) => {
+    const newValue = parseInt(event.target.value, 10);
+    if (newValue >= 10 && newValue <= 20) {
+      setEntries(newValue);
+    }
   };
 
   // For Import
@@ -75,37 +87,21 @@ const List = () => {
     } else {
       setFileName("");
     }
-
-    // Send API to list data from database!
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const response = await axios.get("/api");
-          setUsers(response.data.result);
-        } catch (e) {
-          console.log(e);
-        }
-      };
-      fetchUsers();
-    }, []);
   };
   return (
     <>
       <Sidebar>
         <Header />
-        <div className="p-12 bg-gray-100">
-          <h1 className="text-2xl">Properties</h1>
-          <div className="flex justify-between items-center">
+        <div className="p-8 bg-gray-100 h-screen">
+          <h1 className="text-xl sm:text-2xl my-1">Products</h1>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-4">
             <h3 className="text-sm">
               Dashboard <span className="text-gray-400">/ List </span>
             </h3>
-            <div className="options flex gap-3">
+            <div className="options flex gap-3 mt-4 md:mt-0">
               <Button
                 variant="contained"
                 size="small"
-                onClick={toggleFilter}
                 className="bg-[#006d77] hover:bg-[#349fa9] capitalize"
                 startIcon={<FilterAltOutlinedIcon className="text-white" />}
               >
@@ -161,7 +157,7 @@ const List = () => {
                   </div>
                 </div>
               )}
-              <Link href={"../adminPanel/products/addProducts"}>
+              <Link href={"../admin/products/addProducts"}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -177,168 +173,83 @@ const List = () => {
             </div>
           </div>
 
-          {/* Dropdown Section */}
-          <div>
-            {isFilterVisible && (
-              <div className="mt-4 p-6 bg-white shadow rounded-md border border-gray-200 ">
-                <div className="flex justify-between">
-                  <div className="mb-4">
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="property-name"
-                    >
-                      Property Name
-                    </label>
-                    <select
-                      id="property-name"
-                      className="block appearance-none  bg-white w-48 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      onChange={handleFilterChange}
-                    >
-                      <option value="">Select</option>
-                      {propertyNames.map((name, index) => (
-                        <option key={index} value={name}>
-                          {name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="property-code"
-                    >
-                      Property Code
-                    </label>
-                    <select
-                      id="property-code"
-                      className="block appearance-none  bg-white w-48 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      onChange={handleFilterChange}
-                    >
-                      <option value="">Select</option>
-                      {propertyCodes.map((code, index) => (
-                        <option key={index} value={code}>
-                          {code}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="property-category"
-                    >
-                      Property Category
-                    </label>
-                    <select
-                      id="property-category"
-                      className="block appearance-none  bg-white w-48 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      onChange={handleFilterChange}
-                    >
-                      <option value="">Select</option>
-                      {propertyCategories.map((category, index) => (
-                        <option key={index} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      className="block text-gray-700 font-bold mb-2"
-                      htmlFor="property-details"
-                    >
-                      Property Code Details
-                    </label>
-                    <select
-                      id="property-details"
-                      className="block appearance-none  bg-white w-48 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                      onChange={handleFilterChange}
-                    >
-                      <option value="">Select</option>
-                      {propertyDetails.map((detail, index) => (
-                        <option key={index} value={detail}>
-                          {detail}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setFilterVisible(false)}
-                  className="bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Reset
-                </button>
-              </div>
-            )}
-          </div>
-
-          <div className="data bg-white rounded-lg p-4 mt-8">
-            <div className="flex justify-between">
+          <div className="bg-white rounded-lg p-4 mt-10">
+            <div className="flex flex-col md:flex-row justify-between">
               <p className="text-sm">
                 Show{" "}
-                <span>
-                  <input
-                    type="number"
-                    id="entries"
-                    min={10}
-                    max={20}
-                    value={10}
-                    className="border rounded p-1"
-                  />{" "}
-                  entries
-                </span>
+                <input
+                  type="number"
+                  id="entries"
+                  min={10}
+                  max={20}
+                  value={entries}
+                  step={1}
+                  onChange={handleInputChange}
+                  className="border rounded p-1 w-16"
+                />
+                {"  "}
+                entries
               </p>
-              <label htmlFor="search">
+              <label htmlFor="search" className="mt-4 md:mt-0">
                 Search: <input type="text" className="border rounded p-1" />
               </label>
             </div>
-            <div className="table my-8 text-sm">
-              <table className="table-fixed w-full border rounded-lg border-none">
-                <thead>
+
+            <div className="relative overflow-x-auto my-4">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr className="bg-slate-100">
-                    <th className="border p-2">ID</th>
-                    <th className="border p-2">Name</th>
-                    <th className="border p-2">Category</th>
-                    <th className="border p-2">Details</th>
-                    <th className="border p-2">Property Code</th>
-                    <th className="border p-2">Actions</th>
+                    <th className="border px-4 py-2">Sr#</th>
+                    <th className="border px-4 py-2">Name</th>
+                    <th className="border px-4 py-2">Description</th>
+                    <th className="border px-4 py-2">Price</th>
+                    <th className="border px-4 py-2">StockQuantity</th>
+                    <th className="border px-4 py-2">Category</th>
+                    <th className="border px-4 py-2">Subcategory</th>
+                    <th className="border px-4 py-2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="text-center">
-                    <td className="p-2">1</td>
-                    <td className="p-2">Rental Property 5wk</td>
-                    <td className="p-2">Rental</td>
-                    <td className="p-2">Rental Property 5wk, Faislabad</td>
-                    <td className="p-2">PR-01</td>
-                    <td className="flex gap-2 p-2 justify-center items-center">
-                      <Link href={"../adminPanel/properties/editProperty"}>
-                        <FaRegPenToSquare className="text-green-400 text-lg font-bold cursor-pointer" />
-                      </Link>
-                      <RiDeleteBin6Line
-                        className="text-red-400 text-lg font-bold cursor-pointer"
-                        onClick={handleClick}
-                      />
-                    </td>
-                  </tr>
+                  {products &&
+                    products.map((element, index) => (
+                      <tr key={index} className="border">
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{element.name}</td>
+                        <td className="text-center">{element.description}</td>
+                        <td className="text-center">{element.price}</td>
+                        <td className="text-center">
+                          {element.stock_quantity}
+                        </td>
+                        <td className="text-center">{element.category_name}</td>{" "}
+                        <td className="text-center">
+                          {element.subcategory_name}
+                        </td>{" "}
+                        <td className="flex gap-2 p-2 justify-center items-center">
+                          <Link
+                            href={`../admin/products/editProducts/${element.product_id}`}
+                          >
+                            <FaRegPenToSquare className="text-green-400 text-lg font-bold cursor-pointer" />
+                          </Link>
+                          <RiDeleteBin6Line
+                            className="text-red-400 text-lg font-bold cursor-pointer"
+                            onClick={() => handleDeletion(element.product_id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
-            <div className="flex justify-between mt-4 text-sm">
+
+            <div className="flex flex-col md:flex-row justify-between my-4 text-sm">
               <p>Showing 1 to 1 of 1 entries</p>
-              <div className="flex">
+              <div className="flex mt-4 md:mt-0">
                 <Button
                   variant="outlined"
                   className="capitalize border-slate-300 text-gray-400"
                 >
                   Previous
                 </Button>
-
                 <div className="bg-[#006d77] hover:bg-[#349fa9] text-white px-4 py-2">
                   1
                 </div>
@@ -352,9 +263,10 @@ const List = () => {
             </div>
           </div>
         </div>
+        <Footer />
       </Sidebar>
     </>
   );
 };
 
-export default List;
+export default listProducts;

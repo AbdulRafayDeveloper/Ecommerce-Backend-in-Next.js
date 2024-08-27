@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import { Poppins } from "next/font/google";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
+import Cookie from "js-cookie";
 
 const poppins = Poppins({
   weight: "200",
@@ -59,10 +60,8 @@ const Login = () => {
     try {
       let response;
       if (isSignUp) {
-        // Sign Up logic
-        response = await axios.post("/api/signUp", userData);
+        response = await axios.post("../api/signUp", userData);
       } else {
-        // Login logic
         response = await axios.post("/api/login", userData);
       }
 
@@ -70,6 +69,7 @@ const Login = () => {
         if (isSignUp) {
           toast.success("Account created successfully!");
         } else {
+          Cookie.set("token", response.data.token, { expires: 1 });
           toast.success("Logged in successfully!");
         }
         setFormData({
@@ -88,8 +88,9 @@ const Login = () => {
       }
     } catch (e) {
       console.log("Error", e);
-      toast.error("Error!");
+      toast.error("Error occurred: " + e.message);
     }
+
     try {
       setLoading(false);
     } catch (error) {

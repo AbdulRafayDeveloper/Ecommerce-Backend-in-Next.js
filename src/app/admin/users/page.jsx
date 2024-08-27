@@ -7,6 +7,7 @@ import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const listUsers = () => {
   const [users, setUsers] = useState([]);
@@ -15,9 +16,16 @@ const listUsers = () => {
   useEffect(() => {
     const fetchRecords = async () => {
       try {
-        const response = await axios.get(`/api/users`);
-        setUsers(response.data.result);
+        const token = Cookies.get("token");
+        const response = await axios.get("/api/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Response", response.data);
+        setUsers(response.data.data);
       } catch (error) {
+        console.error("Error fetching records:", error);
         alert("Records not found");
       }
     };
@@ -74,7 +82,7 @@ const listUsers = () => {
             </h3>
           </div>
 
-          <div className="bg-white rounded-lg p-4 mt-24">
+          <div className="bg-white rounded-lg p-4 mt-10">
             <div className="flex flex-col md:flex-row justify-between">
               <p className="text-sm">
                 Show{" "}
@@ -107,7 +115,7 @@ const listUsers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users &&
+                  {Array.isArray(users) &&
                     users.map((element, index) => (
                       <tr key={index} className="border">
                         <td className="text-center">{index + 1}</td>

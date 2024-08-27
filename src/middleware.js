@@ -2,13 +2,11 @@ import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_KEY);
-
-// Function to validate user by token
 async function validateUserByToken(token) {
   try {
     if (!token) return { error: "Log in first" };
     let { payload } = await jwtVerify(token, JWT_SECRET);
-    console.log("Decoded Token: ", payload);
+    // console.log("Decoded Token: ", payload);
 
     if (!payload) return { error: "User not found, log in again" };
 
@@ -16,7 +14,7 @@ async function validateUserByToken(token) {
       return { error: "These are not the admin credentials" };
     }
 
-    return { user: payload }; // Return the user data in an object
+    return { user: payload };
   } catch (err) {
     console.error("Error in validateUserByToken:", err);
     if (err.name === "JWTExpired") {
@@ -33,6 +31,7 @@ async function validateUserByToken(token) {
 export async function middleware(request) {
   const token = request.cookies.get("token")?.value;
   const requestedPath = request.nextUrl.pathname;
+  // console.log("Token: ", token);
 
   if (token) {
     const { user, error } = await validateUserByToken(token);

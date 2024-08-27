@@ -18,8 +18,9 @@ export async function POST(request) {
     // Check if the account already exists
     const [userAlreadyExists] = await pool.query(
       "SELECT COUNT(*) as count FROM users WHERE email = ?",
-      email
+      [email]
     );
+
     if (userAlreadyExists.count > 0) {
       console.log("This Account Already Exists");
       return NextResponse.json({
@@ -34,12 +35,12 @@ export async function POST(request) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const role = "user";
 
-    let insertData = await pool.query(
+    const insertData = await pool.query(
       "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
       [username, email, hashedPassword, role]
     );
 
-    if (insertData.affectedRows > 0) {
+    if (insertData && insertData.affectedRows > 0) {
       console.log("Your Account has been created");
       return NextResponse.json({
         status: 200,
@@ -47,15 +48,15 @@ export async function POST(request) {
         data: insertData,
       });
     } else {
-      console.log("Your request cannot be submitted. Try Again Later!");
+      console.log("Insertion failed, but no error thrown.");
       return NextResponse.json({
-        status: 400,
+        status: 500,
         message: "Your request cannot be submitted. Try Again Later!",
         data: null,
       });
     }
-  } catch (e) {
-    console.log("Error in Insert operation", e);
+  } catch (error) {
+    console.error("Error in Insert operation", error);
     return NextResponse.json({
       status: 500,
       message: "Internal Server Error",

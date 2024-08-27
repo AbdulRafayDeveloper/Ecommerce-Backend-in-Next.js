@@ -44,17 +44,19 @@ export async function POST(request) {
     const token = jwt.sign(
       {
         id: registered.id,
-        Email: registered.userEmail,
+        password: registered.password,
         role: registered.role,
       },
       JWT_SECRET,
       { expiresIn: "24h" }
     );
 
+    console.log(token);
     return NextResponse.json({
       status: 200,
       message: "Logged in successfully!",
-      data: token,
+      token: token,
+      data: null,
     });
   } catch (error) {
     console.error("Error occurred:", error);
@@ -69,7 +71,7 @@ export async function POST(request) {
 export async function GET() {
   try {
     const [result] = await pool.query(
-      "SELECT * FROM users WHERE role = 'User'"
+      "SELECT * FROM users WHERE role = 'user'"
     );
 
     return NextResponse.json({
