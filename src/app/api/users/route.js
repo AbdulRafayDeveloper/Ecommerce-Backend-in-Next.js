@@ -1,6 +1,6 @@
 import { pool } from "@/app/config/db";
 import { NextResponse } from "next/server";
-import authorization from "@/app/api/helper/authorization";
+import authorization from "@/app/helper/authorization";
 
 export async function GET(request) {
   try {
